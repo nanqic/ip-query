@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ip查询</title>
+</head>
+
+<body>
+    <div>
+        <input type="search" id="inpt" onkeydown="handleKeyDown(event)">
+        <button type="submit" onclick="navToQuery()">查询</button>
+    </div>
+    <script>
+        function navToQuery() {
+            const { value } = document.getElementById('inpt')
+            location.assign(`/api/ip?ip=${value}`)
+        }
+
+        function handleKeyDown(event) {
+            if (event.key === 'Enter') {
+                navToQuery()
+            }
+        }
+    </script>
+</body>
+
+</html>
