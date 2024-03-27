@@ -1,11 +1,7 @@
 
 
 module.exports = function handler(req, res) {
-    const allowedOrigins = ['http://localhost:5173', 'https://proxys.ningway.com'];
-    const origin = req.headers.origin;
-    if (allowedOrigins.includes(origin)) {
-        res.setHeader('Access-Control-Allow-Origin', origin);
-    }
+    res.setHeader('Access-Control-Allow-Origin', '*');
 
     let { ip } = req.query
 
