@@ -4,18 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ip查询</title>
+    <link rel="shortcut icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='grey' class='bi bi-search' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0'/%3E%3C/svg%3E">
+    <title>ip query</title>
 </head>
 
 <body>
-    <div>
-        <input type="search" id="inpt" onkeydown="handleKeyDown(event)">
-        <button type="submit" onclick="navToQuery()">查询</button>
+    <div style="display: flex; flex-direction: column;">
+        <iframe id="iframe" src="" frameborder="0"></iframe>
+        <div>
+            <input type="search" id="inpt" onkeydown="handleKeyDown(event)" style="width: 80%; max-width: 368px;">
+            <button type="submit" onclick="navToQuery()">查询</button>
+        </div>
     </div>
     <script>
         function navToQuery() {
             const { value } = document.getElementById('inpt')
-            location.assign(`/api/ip?ip=${value}`)
+            document.getElementById('iframe').src = (`/api/ip/${value}`)
         }
 
         function handleKeyDown(event) {
