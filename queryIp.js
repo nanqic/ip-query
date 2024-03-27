@@ -5,9 +5,11 @@ function queryIp(ip) {
     let result
     if (ip.includes(':')) {
         const path = require('path');
+        const dbPath = path.join(process.cwd(), '/node_modules/ip2region/data/ip2region.db');
         const v6dbPath = path.join(process.cwd(), '/node_modules/ip2region/data/ipv6wry.db');
         const IP2Region = require("ip2region").default;
         const query = new IP2Region({
+            ipv4db: dbPath,
             ipv6db: v6dbPath,
             disableIpv6: false,
         });
