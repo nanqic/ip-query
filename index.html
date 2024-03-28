@@ -18,9 +18,15 @@
         </div>
     </div>
     <script>
+        const iframe = document.getElementById('iframe')
+        const apiUrl = `/api/ip${location.pathname}`;
+        if (!iframe.src.includes(apiUrl)) {
+            iframe.src = apiUrl;
+        }
+
         function navToQuery() {
             const { value } = document.getElementById('inpt')
-            document.getElementById('iframe').src = (`/api/ip/${value}`)
+            iframe.src = (`/api/ip/${value}`)
         }
 
         function handleKeyDown(event) {
