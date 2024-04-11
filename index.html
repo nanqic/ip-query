@@ -20,7 +20,7 @@
     <script>
         const iframe = document.getElementById('iframe')
         const apiUrl = `/api/ip${location.pathname}`;
-        if (!iframe.src.includes(apiUrl)) {
+        if (location.pathname!=='/'&& !iframe.src.includes(apiUrl)) {
             iframe.src = apiUrl;
         }
 

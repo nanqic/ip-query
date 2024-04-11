@@ -14,7 +14,7 @@ function queryIp(ip) {
             disableIpv6: false,
         });
 
-        ip = ip.replace(/:[\da-fA-F]{0,3}$/, '::')
+        ip = ip.replace(/:[\da-fA-F]{0,4}$/, '::')
         result = query.search(ip);
     } else {
         const searcher = require('dy-node-ip2region').create();
