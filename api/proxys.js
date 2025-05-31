@@ -32,3 +32,15 @@ module.exports = async function handler(req, res) {
 
     return res.send(text);
 }
+
+
+function getCodes(text) {
+    const regx = new RegExp(`data-code="(\\w{5})"`, "ig")
+    let codes = ''
+    let match;
+    while ((match = regx.exec(text)) !== null) {
+        const codeValue = match[1];
+        codes += `${codeValue},`
+    }
+    return codes.slice(0, -1)
+}
