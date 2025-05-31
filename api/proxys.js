@@ -1,41 +1,34 @@
 module.exports = async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
-
     let { q, page } = req.query
-    let url = `https://ziguijia.com/search?auth=733175&keywords=${q}${page?'&page='+page:''}`
+    let url = `https://ziguijia.com/search?keywords=${q}${page?'&page='+page:''}`
+
     const resp = await fetch(url)
     let text = await resp.text()
     // console.log(url, page, text.slice(-20));
-  // 4. 定义清洗正则表达式
-  const cleanupRegex = /<(script|style|footer|button)(.|\n)*?>(.|\n)*?<\/(\1)>|<!DOC(.|\n)*?<(hr\/?)>/gi;
-  const scriptRegex = /<script(.|\n)*?<\/script>/gi;
-  const videoLinkRegex = /href="\/j\?code(=\w{5}(?:&amp;start=\d{1,5})?)" target="\w{5,6}"/gi;
-  const searchLinkRegex = /href="\/search\?auth=\d{6}&keywords=\S{1,512}&page=(\d{1,2})"/gi;
+    const regx = new RegExp(`<(script|style|footer|button)(.|\n)*?>(.|\n)*?</(script|style|footer|button)>|<!DOC(.|\n)*?<(hr/?)>`)
+    const regx2 = new RegExp(`href="/j\\?code(=\\w{5}(?:&amp;start=\\d{1,5})?)".target="\\w{5,6}"`, "ig")
+    const regx3 = new RegExp(`href="/search\\?auth=\\d{6}&keywords=\\S{1,512}&page=(\\d{1,2})"`, "ig")
 
-  // 5. 清洗和转换内容
-  let processedText = text
-    .replace(cleanupRegex, "")
-    .replace(scriptRegex, "")
-    .replace(videoLinkRegex, (match, p1) => 
-      `onclick='window.open("/video?no${p1.replace("amp;", "")}")'`
-    )
-    .replace(searchLinkRegex, (match, p1) => 
-      `onclick='window.open("/.netlify/functions/ziguijia-proxy?keywords=${encodeURIComponent(keywords)}&page=${p1}")'`
-    )
-    .replace(
-      /href="\/search(\?[^"]*)"/gi,
-      (match, query) => {
-        const params = new URLSearchParams(query);
-        const page = params.get("page") || "1";
-        const keywords = params.get("keywords") || "";
-        return `href="/.netlify/functions/ziguijia-proxy?keywords=${encodeURIComponent(keywords)}&page=${page}"`;
-      }
-    )
-    .replace(
-      /&amp;page/gi,
-      "&page"
-    );
+    text = text.replace(regx, '')
+    const regxs = new RegExp(`<script(.|\n)*></script>`)
+    text = text.replace(regxs, '')
+    text = text.replace(regx2, (a, b) => {
+        // console.log(a,b);
+        return `onclick=window.open("/video?no${b.replace('amp;', '')}")`
+    })
+    text = text.replace(regx3, (a, b) => {
+        // console.log(a, b, `onclick=window.open("/vsearch/+${b}")`);
+        return `onclick=window.open("/vsearch/${keywords}/?page=${b}")`
+    })
+    text = text
+        .replace(/href="\/search/ig, ' target="_blank" href="/vsearch')
+        .replace(/keywords=/ig, '/').replace(/\?auth=\d+&amp;/ig, '')
+        .replace(/&(?:amp;)page/ig, '?page')
 
+    // 播放全部 链接替换
+    text = text.replace(/\/vsearch\/player\//, `/search?codes=${getCodes(text)}&keywords=`)
     res.setHeader('Content-Type', 'text/html');
-    return res.send(processedText);
+
+    return res.send(text);
 }
