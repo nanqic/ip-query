@@ -22,7 +22,7 @@ module.exports = async function handler(req, res) {
         return `onclick=window.open("/vsearch/${keywords}/?page=${b}")`
     })
     text = text
-        .replace(/href="\/search/ig, ' target="_blank" href="/vsearch')
+        .replace(/href="\/search\??/ig, ' target="_blank" href="/vsearch')
         .replace(/keywords=/ig, '/').replace(/\?auth=\d+&amp;/ig, '')
         .replace(/&(?:amp;)page/ig, '?page')
 
